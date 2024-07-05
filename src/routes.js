@@ -1,14 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { User } = require('shared-orm-library/src/models');
+const pool = require("shared-orm-library/src/dbConnectionPostgre");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    pool.query("SELECT * FROM users", (err, results) => {
+      if (err) throw new Error(err);
+      res.json(results.rows);
+    });
+    // const users = await User.find();
+    // res.json(users);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
 
